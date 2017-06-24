@@ -18,7 +18,7 @@ int ManifoldSystemc_sim :: CREDIT_MSG_TYPE = -1;
 bool ManifoldSystemc_sim :: Msg_type_set = false;
 
 // dummy providing the entry point for systemc lib
-int sc_main(int argc; char **argv) {
+int sc_main(int argc, char **argv) {
   printf("This is a dummy");
 }
 
@@ -33,7 +33,7 @@ ManifoldSystemc_sim::ManifoldSystemc_sim (int nid, const ManifoldSystemc_sim_set
     frequency          = manifoldSystemc_settings.frequency;
     initiation_interval= manifoldSystemc_settings.initiation_interval;
     latency            = manifoldSystemc_settings.latency;
-
+    
     /* instantiate the DRAMSim module */
 //     mem = new MultiChannelMemorySystem(dram_settings.dev_filename, dram_settings.mem_sys_filename, ".", "res", dram_settings.size);
 
@@ -45,7 +45,7 @@ ManifoldSystemc_sim::ManifoldSystemc_sim (int nid, const ManifoldSystemc_sim_set
 //     mem->RegisterCallbacks(read_cb, write_cb, NULL);
 
     //register with clock
-    Clock :: Register(clk, this, &ManifoldSystemc_sim::tick, (void(ManifoldSystemc_sim::*)(void)) 0 );
+    Clock :: Register(clk, this, &ManifoldSystemc_sim::rising, &ManifoldSystemc_sim::falling);
 
     //stats
     stats_n_reads = 0;
@@ -56,7 +56,30 @@ ManifoldSystemc_sim::ManifoldSystemc_sim (int nid, const ManifoldSystemc_sim_set
 #ifdef MANIFOLD_SYSTEMC_UTEST
     completed_writes = 0;
 #endif
+    
+    // start systemc simulation part
+    sc_start();
+    
+    cout << "startet SystemC environment" << endl;
+    
+    // open trace file
+    waveform = sc_create_vcd_trace_file("test_trace");
+    
+    // dump the signals (currently only the clock is available)
+    sc_trace(waveform, clock, "clock");
+    sc_trace(waveform, reset, "reset");
+    
+    // assign initials
+    reset = 0;
+    
+    
 }
+
+ManifoldSystemc_sim::~ManifoldSystemc_sim()
+{
+    sc_close_vcd_trace_file(ManifoldSystemc_sim::waveform);
+}
+
 
 
 void ManifoldSystemc_sim::read_complete(unsigned id, uint64_t address, uint64_t done_cycle)
@@ -142,11 +165,50 @@ bool ManifoldSystemc_sim::limitExceeds()
     return (m_completed_reqs.size() > 8); // some low threshold
 }
 
-
-void ManifoldSystemc_sim::tick()
+// rising clock event
+void ManifoldSystemc_sim::rising()
 {
+    // rising clock edge
+    ManifoldSystemc_sim::clock = 1;
+    
     //cout << "Dram sim tick(), t= " << m_clk->NowTicks() << endl;
     //start new transaction if there is any and the memory can accept
+  
+    cout << "@ " << m_clk->NowTicks() << "rising event" << endl;
+    
+// call to actual DRAMSim
+//     if (!m_incoming_reqs.empty() && mem->willAcceptTransaction() && !limitExceeds()) {
+    if (!m_incoming_reqs.empty() && !limitExceeds()) {
+      // if limit exceeds, stop sending credits. interface will stop eventually
+      Request req = m_incoming_reqs.front();
+      m_incoming_reqs.pop_front();
+
+// actual call to DRAMSim
+//       mem->addTransaction(!req.read, req.addr);
+#ifdef DBG_MANIFOLD_SYSTEMCSIM
+      cout << "@ " << m_clk->NowTicks() << " MC " << m_nid << ": transaction of address " << hex << req.gaddr << dec << " is pushed to memory" << endl;
+#endif
+      //move from input buffer to pending buffer
+          m_pending_reqs[req.addr].push_back(req);
+          send_credit();
+    }
+
+// call to actual DRAMSim
+//       mem->update();
+      try_send_reply();
+
+}
+
+// falling clock event
+void ManifoldSystemc_sim::falling()
+{
+  
+    // falling clock edge
+    ManifoldSystemc_sim::clock = 0;
+    //cout << "Dram sim tick(), t= " << m_clk->NowTicks() << endl;
+    //start new transaction if there is any and the memory can accept
+  
+    cout << "@ " << m_clk->NowTicks() << "falling event" << endl;
   
 // call to actual DRAMSim
 //     if (!m_incoming_reqs.empty() && mem->willAcceptTransaction() && !limitExceeds()) {

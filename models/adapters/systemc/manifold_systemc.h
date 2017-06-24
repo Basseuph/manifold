@@ -33,6 +33,7 @@ struct ManifoldSystemc_sim_settings {
     bool send_st_resp;                  // whether responses are sent for stores
     int downstream_credits;
     //    manifold::uarch::DestMap* mc_map;
+    
 };
 
 
@@ -42,7 +43,7 @@ public:
     enum {PORT0=0};
 
     ManifoldSystemc_sim(int nid, const ManifoldSystemc_sim_settings& ManifoldSystemc_sim, manifold::kernel::Clock&);
-    ~ManifoldSystemc_sim() {};
+    ~ManifoldSystemc_sim();
 
     int get_nid() { return m_nid; }
 
@@ -51,7 +52,8 @@ public:
     template<typename T>
     void handle_incoming(int, manifold::uarch::NetworkPacket* req); // interface with NI
 
-    void tick();        // registered with clock
+    void rising();        // registered with rising edge of the clock
+    void falling();        // registered with falling edge of the clock
 
     static void Set_msg_types(int mem, int credit) // Set some interface parameters
     {
@@ -63,6 +65,13 @@ public:
 
     void print_stats(std::ostream&);
     void print_config(std::ostream&);
+    
+    // SystemC items
+    sc_trace_file *waveform;
+    
+    // SystemC signals
+    sc_signal<bool> clock;
+    sc_signal<bool> reset;
 
 #ifdef MANIFOLD_SYSTEMC_UTEST
 public:
