@@ -35,10 +35,10 @@ if test "x${para_sim}" = xyes ; then
         AC_SUBST(CXX, mpic++)
     else # para_sim enabled; mpic++ not found
         AC_MSG_WARN([
-	---------------------------------------------
-	mpic++ not found! Building serial simulation!
-	---------------------------------------------])
-	AC_DEFINE(NO_MPI)
+  ---------------------------------------------
+  mpic++ not found! Building serial simulation!
+  ---------------------------------------------])
+  AC_DEFINE(NO_MPI)
     fi
 else # para_sim disabled
     AC_DEFINE(NO_MPI)
@@ -58,24 +58,24 @@ AC_ARG_VAR([KERINC], [The path where kernel headers can be found.])
 # then set to installation directory.
 if test -z "$KERINC" ; then
     if test -d "$srcdir/../../../kernel"; then
-	KERINC='$(top_srcdir)/../../..'
-	AC_MSG_NOTICE([
+  KERINC='$(top_srcdir)/../../..'
+  AC_MSG_NOTICE([
     -----------------------------------------
     Use kernel header files in super-project.
     -----------------------------------------
-	])
+  ])
     else
-	#check installation dir
-	# unfortunately I can't use if test -f "$includedir/manifold/kernel/manifold.h"
-	# because $includedir will only expand to ${prefix}/include
+  #check installation dir
+  # unfortunately I can't use if test -f "$includedir/manifold/kernel/manifold.h"
+  # because $includedir will only expand to ${prefix}/include
 
-	# simply set the value. I can't check if it's really there.
-	KERINC='$(includedir)/manifold'
-	AC_MSG_NOTICE([
+  # simply set the value. I can't check if it's really there.
+  KERINC='$(includedir)/manifold'
+  AC_MSG_NOTICE([
     --------------------------------------------------
     Use kernel header files in installation direcotry.
     --------------------------------------------------
-	])
+  ])
     fi
 else # KERINC is specified
     AC_MSG_NOTICE([
@@ -87,6 +87,36 @@ fi
 
 AC_SUBST([KERNEL_INC], [$KERINC])
 
+# use SystemC by default
+AC_ARG_WITH([systemc],
+    [AS_HELP_STRING([--without-systemc],
+        [do not use SystemC @<:@default: no@:>@])],
+    [systemc=${enableval}], [systemc=yes])
+
+if test "x${systemc}" = xyes ; then
+    #check if SystemC header files exist
+    # We allow user to specify the location of the header files, e.g.,
+    # configure SYSTEMCINC=/foo/systemc
+    if test -z "$SYSTEMCINC" ; then
+  SYSTEMCINC='/usr/local/include'
+    fi
+
+    if test ! -e "$SYSTEMCINC/systemc.h"; then
+  AC_MSG_ERROR([
+    -----------------------------------------
+    ERROR: systemc.h not found in $SYSTEMCINC!
+    -----------------------------------------
+  ])
+    else
+  AC_DEFINE(USE_SYSTEM_C)
+  AC_SUBST([SYSTEM_C_INC], [$SYSTEMCINC])
+    fi
+else # use_qsim disabled
+    AC_MSG_WARN([
+    -----------------------------------------------------------------
+    USE_SYSTEM_C disabled! Building only processor models not using SystemC.
+    -----------------------------------------------------------------])
+fi
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
