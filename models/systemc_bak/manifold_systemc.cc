@@ -17,7 +17,10 @@ int ManifoldSystemc_sim:: MEM_MSG_TYPE = -1;
 int ManifoldSystemc_sim :: CREDIT_MSG_TYPE = -1;
 bool ManifoldSystemc_sim :: Msg_type_set = false;
 
-
+// dummy providing the entry point for systemc lib
+int sc_main(int argc; char **argv) {
+  printf("This is a dummy");
+}
 
 ManifoldSystemc_sim::ManifoldSystemc_sim (int nid, const ManifoldSystemc_sim_settings& manifoldSystemc_settings, Clock& clk) :
     m_nid(nid)
