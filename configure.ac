@@ -14,7 +14,7 @@ AC_CONFIG_SUBDIRS([kernel
                    models/cache/simple-cache
                    models/memory/CaffDRAM
                    models/memory/DRAMSim2
-                   models/systemc
+                   models/adapters/systemc
                    models/network/iris
                    models/processor/zesto
                    models/processor/simple-proc
