@@ -14,6 +14,8 @@
 #include "qsim_builder.h"
 #include "qsim.h"
 
+#include "sysBuilder_llp.h"
+
 #ifdef LIBKITFOX
 #include "kitfox_builder.h"
 #endif
@@ -28,14 +30,14 @@ struct Node_conf_llp {
     int lp;
 };
 
-class SysBuilder_llp_systemc {
+class SysBuilder_llp_systemc : SysBuilder_llp {
 public:
     enum FrontendType {FT_QSIMCLIENT, FT_QSIMLIB, FT_QSIMPROXY, FT_TRACE}; // front-end type: QSimClient, QSimLib, trace
 
     enum { PART_1, PART_2, PART_Y}; //torus partitioning
 
-    SysBuilder_llp(const char* fname);
-    ~SysBuilder_llp();
+    SysBuilder_llp_systemc(const char* fname);
+    ~SysBuilder_llp_systemc();
 
     void config_system();
     void build_system(FrontendType type, int n_lps, std::vector<std::string>& args, int part); //for QSim client and tracefile
@@ -72,55 +74,21 @@ protected:
     virtual void do_partitioning_1_part(int n_lps);
     virtual void do_partitioning_y_part(int n_lps);
 
-    ProcBuilder* m_proc_builder;
-    CacheBuilder* m_cache_builder;
-    NetworkBuilder* m_network_builder;
-    MemControllerBuilder* m_mc_builder;
-    QsimBuilder *m_qsim_builder;
+    SystemCBuilder* sysC_builder;
+ 
+    std::vector<int> sysC_node_idx_vec;
 
-#ifdef LIBKITFOX
-    KitFoxBuilder *m_kitfox_builder;
-#endif
+    std::set<int> sysC_node_idx_set; //set is used to ensure each index is unique
 
-    Qsim::OSDomain *m_qsim_osd;
-
-    int MAX_NODES;
-    manifold::kernel::Ticks_t STOP; //simulation stop time
-    uint64_t m_DEFAULT_CLOCK_FREQ; //default clock's frequency
-
-    std::vector<Node_conf_llp> m_node_conf;
-
-    std::vector<int> proc_node_idx_vec;
-    std::vector<int> mc_node_idx_vec;
-
-    std::set<int> proc_node_idx_set; //set is used to ensure each index is unique
-    std::set<int> mc_node_idx_set; //set is used to ensure each index is unique
-
-    std::map<int, int> proc_id_lp_map; //maps proc's node id to its LP
-    std::map<int, int> mc_id_lp_map; //maps mc's node id to its LP
+    std::map<int, int> sysC_id_lp_map; //maps mc's node id to its LP
 
     //int m_processor_type;
 private:
 
-    void create_qsimclient_nodes(int n_lps, std::vector<std::string>& argv, int part);
-    void create_qsimlib_nodes(Qsim::OSDomain* qsim_osd, vector<string>& args);
-    void create_qsimproxy_nodes(vector<string>& args, const char* appFile, int n_lps, int part);
-    void create_trace_nodes(int n_lps, vector<string>& args, int part);
-
-#ifdef LIBKITFOX
-    void create_kitfoxproxy_nodes(const char* config);
-#endif
-
     void connect_components();
 
-    void dep_injection_for_iris();
-    void dep_injection_for_mcp();
+    void dep_injection_for_sysC();
 
-
-
-    bool m_conf_read; //used to ensure config_system is called first
-
-    manifold::kernel::Clock* m_default_clock;
 };
 
 

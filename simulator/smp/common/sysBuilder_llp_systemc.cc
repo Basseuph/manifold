@@ -199,6 +199,19 @@ void SysBuilder_llp_systemc :: config_components()
 //          for(int j=0; j<num_proc; j++)
 //              assert(this->mc_node_idx_vec[i] != this->proc_node_idx_vec[j]);
 //      }
+        
+        // SystemC node
+        Setting& setting_systemc = m_config.lookup("manifold_systemc.node_idx");
+        int num_sysC = setting_systemc.getLength();
+        assert(num_sysC >= 1 && num_sysC <= MAX_NODES);
+        
+        this->sysC_node_idx_vec.resize(num_sysC);
+        
+        for(int i=0; i<num_sysC; i++) {
+            assert((int)setting_systemc[i] >= 0 && (int)setting_systemc[i] < MAX_NODES);
+            sysC_node_idx_set.insert((int)setting_systemc[i]);
+            this->sysC_node_idx_set[i] = (int)setting_systemc[i];
+        }
     }
     catch (SettingNotFoundException e) {
         cout << e.getPath() << " not set." << endl;
