@@ -16,4 +16,4 @@ Makefile
 configure
 smp_llp
 smp_l1l2
-
+simulator/smp/state
