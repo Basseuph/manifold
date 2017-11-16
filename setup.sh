@@ -62,14 +62,14 @@ tar -xf graphbig_x86.tar.xz
 tar -xf graphbig_a64.tar.xz
 cd ..
 
-if [ ! -f $QSIM_PREFIX/state.64 ]; then
-    echo -e "QSim state files are not found in $QSIM_PREFIX"
-    echo -e "Please run ${bold}mkstate.sh${normal} in $QSIM_PREFIX"
-    exit 1
-else
+#if [ ! -f $QSIM_PREFIX/state.64 ]; then
+#    echo -e "QSim state files are not found in $QSIM_PREFIX"
+#    echo -e "Please run ${bold}mkstate.sh${normal} in $QSIM_PREFIX"
+#    exit 1
+#else
     echo -e "Linking QSim state files to manifold directory smp/state ..."
     ln -s $QSIM_PREFIX state
-fi
+#fi
 
 echo -e "Building simulator ..."
 cd QsimProxy
