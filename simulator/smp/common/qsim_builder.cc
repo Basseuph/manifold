@@ -17,6 +17,12 @@ void QsimProxyBuilder::read_config(Config& config, const char*appFile)
         strcpy(state_file,stateFile);
         uint64_t default_clock = config.lookup("default_clock");
         qsim_interrupt_interval = default_clock/qsim_interrupt_handler_clock;
+         if (!strcmp(state_file,"ZCU102")) {
+             const char* petalinux_project_folder = config.lookup("processor.petalinux_path");
+             strcpy(petalinux_project_folder_path,petalinux_project_folder);
+             const char* qemu_shared_folder = config.lookup("processor.qemu_shared_folder_path");
+             strcpy(qemu_shared_folder_path,qemu_shared_folder);
+         }
     }
     catch(SettingNotFoundException e) {
         cout << e.getPath() << " not set." << endl;
@@ -32,7 +38,10 @@ void QsimProxyBuilder::read_config(Config& config, const char*appFile)
 
 void QsimProxyBuilder::create_qsim(int LP)
 {
-    component_id = Component::Create<qsim_proxy_t>(LP, state_file, app_file, qsim_interrupt_interval);
+    if (!strcmp(state_file,"ZCU102"))
+        component_id = Component::Create<qsim_proxy_t>(LP, state_file, app_file, qsim_interrupt_interval,petalinux_project_folder_path,qemu_shared_folder_path);
+    else
+        component_id = Component::Create<qsim_proxy_t>(LP, state_file, app_file, qsim_interrupt_interval);
     qsim_proxy_t *qsim_proxy = manifold::kernel::Component :: GetComponent<qsim_proxy_t>(component_id);
 
     if(qsim_proxy) {
@@ -46,6 +55,10 @@ void QsimProxyBuilder::print_config(std::ostream& out)
    out << "Qsim type: Qsim Proxy\n";
    out << "  state file: " << state_file << "\n";
    out << "  app file: " << app_file << "\n";
+   if (!strcmp(state_file,"ZCU102")) {
+       out << "  petalinux_path path: " << petalinux_project_folder_path << "\n";
+       out << "  qemu_shared_folder path: " << qemu_shared_folder_path << "\n";
+   }
 }
 
 void QsimProxyBuilder::print_stats(std::ostream& out)

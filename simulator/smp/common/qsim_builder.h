@@ -45,6 +45,8 @@ public:
 
 private:
     uint64_t qsim_interrupt_interval;
+    char petalinux_project_folder_path[128];
+    char qemu_shared_folder_path[128];
 };
 
 

@@ -21,6 +21,7 @@ class qsim_proxy_t : public manifold::kernel::Component
 {
 public:
     qsim_proxy_t(char *StateName, char *AppName, uint64_t InterruptInterval);
+    qsim_proxy_t(char *StateName, char *AppName, uint64_t InterruptInterval, char *Petalinux_project_folder_path, char *Qemu_shared_folder_path);
     ~qsim_proxy_t();
 
     /* Tick function periodically invokes Qsim timer interrupt */
