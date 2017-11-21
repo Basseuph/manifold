@@ -612,9 +612,23 @@ void SimpleRouter::print_stats (ostream& out ) const
 
 std::string InputBufferState :: toString()
 {
+    static const char* RouterPipeStageStr[] = {
+        "PS_INVALID",
+        "EMPTY",
+        //"IB",
+        "FULL",
+        //"ROUTED",
+        "VCA_REQUESTED",
+        "SWA_REQUESTED",
+        //"SW_ALLOCATED",
+        "SW_TRAVERSAL",
+        //"REQ_OUTVC_ARB",
+        "VCA_COMPLETE"
+    };
+
     stringstream str;
     str << "port= " << (int)input_port << " vc= " << (int)input_channel << " out port= " << (int)output_port
-		      << " out vc= " << (int)output_channel << " stage= " << RouterPipeStageStr[pipe_stage];
+              << " out vc= " << (int)output_channel << " stage= " << RouterPipeStageStr[pipe_stage];
     return str.str();
 }
 

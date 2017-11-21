@@ -69,19 +69,6 @@ enum RouterPipeStage {
     VCA_COMPLETE 
 };
 
-static const char* RouterPipeStageStr[] = {
-    "PS_INVALID", 
-    "EMPTY",
-    //"IB",
-    "FULL",
-    //"ROUTED",
-    "VCA_REQUESTED", 
-    "SWA_REQUESTED", 
-    //"SW_ALLOCATED", 
-    "SW_TRAVERSAL", 
-    //"REQ_OUTVC_ARB", 
-    "VCA_COMPLETE" 
-};
 #ifdef IRIS_DBG
 #endif
 
