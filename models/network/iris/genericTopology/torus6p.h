@@ -284,7 +284,6 @@ void
 Torus6p<T>::connect_routers()
 {
     const manifold::kernel::Ticks_t LATENCY = 1;
-    const unsigned no_nodes = x_dim * y_dim;
 
     // Configure east - west links for the routers.. in order first WEST then
     for ( uint i=0; i<y_dim; i++) { //for all rows
