@@ -61,7 +61,7 @@ void qsim_proxy_t::handle_core_request(int temp, T *CoreRequest)
         if(!rc) {
             Qsim::QueueItem queue_item;
             assert(buffer.size() == 0);
-            if(!qsim_osd->booted(core_id)) {
+            if(!qsim_osd->runnable(static_cast<unsigned int>(core_id))) {
                 queue_item.cb_type = Qsim::QueueItem::TERMINATED;
                 queue_item.id = core_id;
 
