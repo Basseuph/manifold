@@ -264,13 +264,13 @@ void ROB_t::update(inst_t *inst)
 
 void ROB_t::pop_front() // It must be called after get_front().
 {
-    inst_t *inst = *queue.begin();
 
 #ifdef SPX_DEBUG
     fprintf(stdout,"SPX_DEBUG (core %d) | %lu: ROB.pop_front (%d/%d) uop %lu (Mop %lu)\n",pipeline->core->core_id,pipeline->core->clock_cycle,queue.size()-1,size,inst->uop_sequence,inst->Mop_sequence);
 #endif
 
 #ifdef LIBKITFOX
+    inst_t *inst = *queue.begin();
     pipeline->counter.rob.read++;
     if(inst->dest_reg||inst->dest_flag||inst->dest_fpreg)
         pipeline->counter.latch_rob2reg.switching++;
@@ -616,7 +616,7 @@ void RF_t::resolve_dependency(inst_t *inst)
                 pipeline->counter.rat.write++;
                 pipeline->counter.freelist.read++;
 #endif
-                fpregs_stack_ptr = (++fpregs_stack_ptr)%(int)SPX_N_FPREGS;
+                fpregs_stack_ptr = (fpregs_stack_ptr + 1) % ((int)SPX_N_FPREGS);
                 fpregs[fpregs_stack_ptr] = inst;
                 inst->dest_fpreg |= (0x01<<fpregs_stack_ptr); // ST0
                 break;
