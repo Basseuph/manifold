@@ -372,7 +372,7 @@ void outorder_t::handle_cache_response(int temp, cache_request_t *cache_request)
 
     assert(inst);
     if(core->core_id != core->core_id) {
-        fprintf(stdout,"SPX_ERROR (core %d) | %lu : strange cache response uop %lu (Mop %lu) %s (addr %016llx) of core %d received\n",core->core_id,core->clock_cycle,inst->uop_sequence,inst->Mop_sequence,(inst->memcode==SPX_MEM_LD)?"SPX_MEM_LD":"SPX_MEM_ST",inst->data.paddr,core->core_id);
+        fprintf(stdout,"SPX_ERROR (core %d) | %lu : strange cache response uop %lu (Mop %lu) %s (addr %016lx) of core %d received\n",core->core_id,core->clock_cycle,inst->uop_sequence,inst->Mop_sequence,(inst->memcode==SPX_MEM_LD)?"SPX_MEM_LD":"SPX_MEM_ST",inst->data.paddr,core->core_id);
         debug_deadlock_inst(inst);
         exit(1);
     }
