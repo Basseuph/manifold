@@ -86,8 +86,8 @@ private:
     int port_id;
     Qsim::QueueItem queue[QSIM_PROXY_QUEUE_SIZE];
     //std::vector<Qsim::QueueItem> queue;
-    unsigned num_queue_items;
     bool extended;
+    unsigned num_queue_items;
 };
 
 
