@@ -85,8 +85,23 @@ int main(int argc, char** argv)
     //start simulation
     //==========================================================================
     sysBuilder.pre_simulation();
+
+    cerr << "Finished sysBuilder.pre_simulation() ..." << endl;
+    cerr.flush();
+
     sysBuilder.print_config(cout);
+
+    cerr << "Finished sysBuilder.print_config(cout); ..." << endl;
+    cerr.flush();
+
     Manifold::StopAt(sysBuilder.get_stop_tick());
+
+    cerr << "Manifold::StopAt(sysBuilder.get_stop_tick()); ..." << endl;
+    cerr.flush();
+
+
+    cerr << "Manifold::Run ..." << endl;
+    cerr.flush();
     Manifold::Run();
 
 
@@ -96,6 +111,10 @@ int main(int argc, char** argv)
 #ifdef REDIRECT_COUT
     std::cout.rdbuf(cout_sbuf);
 #endif
+
+    // make sure the output is printed
+    std::cerr.flush();
+    std::cout.flush();
 
     Manifold::Finalize();
 }

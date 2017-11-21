@@ -40,8 +40,13 @@ qsim_proxy_t::qsim_proxy_t(char *StateName, char *AppName, uint64_t InterruptInt
     cout << "Loading Qsim with ZCU102 ..." << endl;
     qsim_osd = new Qsim::OSDomain(4, Petalinux_project_folder_path, "xilinx_zcu102",QSIM_HEADLESS, 4096,Qemu_shared_folder_path);
 
-    cout << "Have fineshed Kernel start-up. Start application ..." << endl;
+    cerr << "Start the Kernel." << endl;
+    cerr.flush();
+
     load_file(*qsim_osd, AppName);
+
+    cerr << "Have fineshed Kernel start-up. Start application ..." << endl;
+    cerr.flush();
 
     cout << "Finished initializing Qsim" << endl;
 
@@ -56,6 +61,9 @@ qsim_proxy_t::qsim_proxy_t(char *StateName, char *AppName, uint64_t InterruptInt
 
     buffer.reserve(QSIM_PROXY_QUEUE_SIZE);
     buffer.clear();
+
+    cerr << "Finished initializing Qsim ..." << endl;
+    cerr.flush();
 }
 
 
