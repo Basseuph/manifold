@@ -2,6 +2,8 @@
 #include "qsim.h"
 #include "qsim-load.h"
 
+#define START_WITHOUT_SATE_FILE "NO_STATE_FILE"
+
 using namespace std;
 using namespace Qsim;
 using namespace manifold;
@@ -13,7 +15,11 @@ qsim_proxy_t::qsim_proxy_t(char *StateName, char *AppName, uint64_t InterruptInt
     interrupt_interval(InterruptInterval)
 {
     cout << "Loading Qsim state file ..." << endl;
-    qsim_osd = new Qsim::OSDomain(StateName);
+
+    if (strcmp(StateName,START_WITHOUT_SATE_FILE) == 0)
+        qsim_osd = new Qsim::OSDomain(1,"/home/bimmermann/Masterarbeit/AREX_GITHUB/qsim/linux/Image","a64",QSIM_HEADLESS,4096);
+    else
+        qsim_osd = new Qsim::OSDomain(StateName);
 
     cout << "Loading application ..." << endl;
     load_file(*qsim_osd, AppName);
