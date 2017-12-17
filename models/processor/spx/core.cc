@@ -113,7 +113,9 @@ void spx_core_t::tick()
 
 void spx_core_t::print_stats(uint64_t sampling_period, FILE *LogFile)
 {
+    /*
     if(clock_cycle&&((clock_cycle%sampling_period) == 0)) {
+
         fprintf(LogFile,"clk_cycle= %3.1lfM | core%d | \
                          IPC= %lf ( %lu / %lu ), \
                          avgIPC= %lf ( %lu / %lu )\n",
@@ -125,7 +127,9 @@ void spx_core_t::print_stats(uint64_t sampling_period, FILE *LogFile)
                          pipeline->stats.uop_count,
                          clock_cycle);
         reset_interval_stats();
+
     }
+    */
 }
 
 void spx_core_t::reset_interval_stats()
