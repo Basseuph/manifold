@@ -63,7 +63,7 @@ int main(int argc, char** argv)
     cout << "Number of LPs = " << N_LPs << endl;
 
 
-#define REDIRECT_COUT
+//#define REDIRECT_COUT
 
 #ifdef REDIRECT_COUT
     // create a file into which to write debug/stats info.
