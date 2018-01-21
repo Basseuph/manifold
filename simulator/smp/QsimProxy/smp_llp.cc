@@ -94,10 +94,10 @@ int main(int argc, char** argv)
     cerr << "Finished sysBuilder.print_config(cout); ..." << endl;
     cerr.flush();
 
-    Manifold::StopAt(sysBuilder.get_stop_tick());
-
-    cerr << "Manifold::StopAt(sysBuilder.get_stop_tick()); ..." << endl;
-    cerr.flush();
+    // At the moment we would not like to stop the simualtion afther a time period
+//    Manifold::StopAt(sysBuilder.get_stop_tick());
+//    cerr << "Manifold::StopAt(sysBuilder.get_stop_tick()); ..." << endl;
+//    cerr.flush();
 
 
     cerr << "Manifold::Run ..." << endl;
